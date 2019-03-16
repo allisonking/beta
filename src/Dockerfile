@@ -18,6 +18,7 @@ RUN apt-get update && apt-get install -y \
   postgresql-client \
   jq \
   git \
+  curl \
   && apt-get clean && locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
 
 # python requirements
@@ -39,5 +40,6 @@ RUN /etc/init.d/postgresql start && \
 
 ADD . src/
 ENV PYTHONPATH /src/python
+# add our own bin to path for handy scripts
 ENV PATH="/src/bin:${PATH}"
 WORKDIR /src
