@@ -1,0 +1,8 @@
+#!/bin/bash
+
+exec docker run \
+            -p 8000:8000 \
+            --user dev \
+	    -e SHELL=/bin/bash \
+            --mount type=bind,source=$(pwd)/src,target=/src \
+            -it beta:latest 
