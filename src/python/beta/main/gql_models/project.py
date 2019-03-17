@@ -48,7 +48,6 @@ class UpdateProject(graphene.Mutation):
         user_id = graphene.Int()
 
     def mutate(self, info, project_id, **kwargs):
-        print(kwargs)
         ok = True
         Project.objects.filter(id=project_id).update(**kwargs)
         project = Project.objects.get(id=project_id)

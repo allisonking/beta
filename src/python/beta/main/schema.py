@@ -4,7 +4,7 @@ from graphene_django.types import DjangoObjectType
 from main.models import Project, Chapter, Comment
 from django.contrib.auth.models import User
 from main.gql_models.project import ProjectType, CreateProject, DeleteProject, UpdateProject
-from main.gql_models.user import UserType, CreateUser
+from main.gql_models.user import UserType, CreateUser, DeleteUser, UpdateUser
 from main.gql_models.chapter import ChapterType
 from main.gql_models.comment import CommentType
 
@@ -17,6 +17,8 @@ class Mutation(graphene.ObjectType):
 
     # user
     create_user = CreateUser.Field()
+    delete_user = DeleteUser.Field()
+    update_user = UpdateUser.Field()
 
 
 class Query(object):
