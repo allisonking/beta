@@ -11,11 +11,23 @@ class Project(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField()
 
+    def __str__(self):
+        return self.title
+
 
 class Chapter(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200, null=True)
     chapter_text = models.TextField()
+    order_num = models.IntegerField(
+        'chapter number for ordering purposes', default=1)
     version = models.IntegerField(default=1)
+
+    def __str__(self):
+        if self.title:
+            return self.title
+        # return the first 100 characters of the text if no title exists
+        return f'{self.chapter_text[0:100]}...'
 
 
 class Comment(models.Model):
@@ -29,3 +41,7 @@ class Comment(models.Model):
         'the id of the word in the chapter this comment ends at')
     tags = ArrayField(models.CharField(
         max_length=200, blank=True), default=list)
+
+    def __str__(self):
+        # return the first 100 characters of the text
+        return f'{self.text[0:100]}...'
