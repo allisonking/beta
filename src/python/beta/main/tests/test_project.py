@@ -41,23 +41,25 @@ class ProjectTestCase(GraphQLTestCase):
 
     def test_delete_project(self):
         self.seed_data()
+        project = Project.objects.first()
         q = '''
-        mutation {
-            deleteProject(projectId:3) {
+        mutation($projectId:Int!) {
+            deleteProject(projectId:$projectId) {
                 ok
             }
         }
         '''
         count = Project.objects.count()
-        resp = self.query(q, op_name='deleteProject')
+        resp = self.query(q, op_name='deleteProject',
+                          variables={'projectId': project.id})
         self.assertResponseNoErrors(resp)
         self.assertEqual(Project.objects.count(), count-1)
 
     def test_create_project(self):
-        self.seed_user()
+        user = self.seed_user()
         q = '''
-        mutation {
-            createProject(title:"new project", userId:1) {
+        mutation($userId:Int!) {
+            createProject(title:"new project", userId:$userId) {
                 ok
                 project {
                     title
@@ -65,7 +67,8 @@ class ProjectTestCase(GraphQLTestCase):
             }
         }
         '''
-        resp = self.query(q, op_name="createProject")
+        resp = self.query(q, op_name="createProject",
+                          variables={'userId': user.id})
         self.assertResponseNoErrors(resp)
         data = resp['data']['createProject']['project']
         self.assertEqual(Project.objects.count(), 1)

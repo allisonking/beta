@@ -16,9 +16,15 @@ class CreateUser(graphene.Mutation):
     class Arguments:
         username = graphene.String(required=True)
         password = graphene.String(required=False)
+        first_name = graphene.String()
+        last_name = graphene.String()
+        email = graphene.String()
+        is_staff = graphene.Boolean()
+        is_active = graphene.Boolean()
 
-    def mutate(self, info, username, password):
-        user = User(username=username, password=password)
+    def mutate(self, info, username, password, **kwargs):
+        user = User.objects.create(username=username, **kwargs)
+        user.set_password(password)  # hashes the password
         user.save()
         ok = True
         return CreateUser(user=user, ok=ok)
@@ -40,7 +46,7 @@ class DeleteUser(graphene.Mutation):
         if user_id:
             user = User.objects.get(id=user_id)
         elif kwargs.get('username'):
-            user = User.object.get(username=username)
+            user = User.objects.get(username=username)
         user.is_active = False
         user.save()
         ok = True
@@ -64,6 +70,11 @@ class UpdateUser(graphene.Mutation):
 
     def mutate(self, info, user_id, **kwargs):
         ok = True
-        User.objects.filter(id=user_id).update(**kwargs)
-        user = User.objects.get(id=user_id)
+        userset = User.objects.filter(id=user_id)
+        userset.update(**kwargs)
+        user = userset[0]
+        if 'password' in kwargs:
+            user.set_password(kwargs['password'])
+            user.save()
+
         return UpdateUser(user=user, ok=ok)

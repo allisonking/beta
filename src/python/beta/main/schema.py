@@ -5,20 +5,30 @@ from main.models import Project, Chapter, Comment
 from django.contrib.auth.models import User
 from main.gql_models.project import ProjectType, CreateProject, DeleteProject, UpdateProject
 from main.gql_models.user import UserType, CreateUser, DeleteUser, UpdateUser
-from main.gql_models.chapter import ChapterType
-from main.gql_models.comment import CommentType
+from main.gql_models.chapter import ChapterType, CreateChapter, DeleteChapter, UpdateChapter
+from main.gql_models.comment import CommentType, CreateComment, DeleteComment, UpdateComment
 
 
 class Mutation(graphene.ObjectType):
+    # user
+    create_user = CreateUser.Field()
+    delete_user = DeleteUser.Field()
+    update_user = UpdateUser.Field()
+
     # project
     create_project = CreateProject.Field()
     delete_project = DeleteProject.Field()
     update_project = UpdateProject.Field()
 
-    # user
-    create_user = CreateUser.Field()
-    delete_user = DeleteUser.Field()
-    update_user = UpdateUser.Field()
+    # chapter
+    create_chapter = CreateChapter.Field()
+    delete_chapter = DeleteChapter.Field()
+    update_chapter = UpdateChapter.Field()
+
+    # comment
+    create_comment = CreateComment.Field()
+    delete_comment = DeleteComment.Field()
+    update_comment = UpdateComment.Field()
 
 
 class Query(object):
