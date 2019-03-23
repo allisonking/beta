@@ -9,8 +9,8 @@ const WriteRoute = () => {
   return (
     <Query query={QUERY_ALL_PROJECTS}>
       {({ loading, error, data }) => {
-        console.log(error);
-        return !loading && <TextBox text={data} />;
+        console.log(data);
+        return !loading && <TextBox text={data.allProjects[0].title} />;
       }}
     </Query>
   );
