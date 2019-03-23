@@ -1,5 +1,6 @@
 from main.tests.gql import GraphQLTestCase
 from django.contrib.auth.models import User
+from main.models import Project, Chapter, Comment
 
 
 class UserTestCase(GraphQLTestCase):
@@ -44,9 +45,7 @@ class UserTestCase(GraphQLTestCase):
         count = User.objects.count()
         resp = self.query(q, op_name='deleteUser')
         self.assertResponseNoErrors(resp)
-        # we should still have the same number of users, but one should be inactive
-        self.assertEqual(User.objects.count(), count)
-        self.assertFalse(User.objects.get(username="tolkien").is_active)
+        self.assertEqual(User.objects.count(), count-1)
 
         # delete by user ID
         q = '''
@@ -60,7 +59,7 @@ class UserTestCase(GraphQLTestCase):
         resp = self.query(q, op_name='deleteUser',
                           variables={'userId': user.id})
         self.assertResponseNoErrors(resp)
-        self.assertFalse(User.objects.get(id=user.id).is_active)
+        self.assertEqual(User.objects.count(), count-2)
 
     def test_create_user(self):
         q = '''
@@ -108,3 +107,40 @@ class UserTestCase(GraphQLTestCase):
         self.assertEqual(data['email'], 'headmaster@hogwarts.edu')
         self.assertNotEqual(data['password'], 'alohomora')
         self.assertTrue('sha256' in data['password'])
+
+    def test_delete_cascades(self):
+        user1 = User.objects.create_user(username="jkrowling")
+        user2 = User.objects.create_user(username="grrmartin")
+        project = Project.objects.create(user=user1, title='harry potter')
+        chapter1 = Chapter.objects.create(
+            project=project, chapter_text="yer a wizard")
+        chapter2 = Chapter.objects.create(
+            project=project, chapter_text="a what?")
+        Comment.objects.create(chapter=chapter1, commenter=user2,
+                               text="how about adding some DEATH", reference_start=1, reference_end=3)
+        Comment.objects.create(chapter=chapter2, commenter=user2,
+                               text="could use more sarcastic comments", reference_start=2, reference_end=4)
+        q = '''
+        mutation($username: String!) {
+            deleteUser(username:$username) {
+                ok
+            }
+        }
+        '''
+        resp = self.query(q, op_name='deleteUser', variables={
+                          'username': 'grrmartin'})
+        self.assertResponseNoErrors(resp)
+
+        # grrmartin's comments should still be there
+        all_comments = Comment.objects.all()
+        self.assertEqual(len(all_comments), 2)
+        # but his name shouldn't be associated with it anymore
+        [self.assertIsNone(comment.commenter) for comment in all_comments]
+
+        # deleting jkr should delete everything
+        resp = self.query(q, op_name='deleteUser', variables={
+                          'username': 'jkrowling'})
+        self.assertEqual(len(Project.objects.all()), 0)
+        self.assertEqual(len(Chapter.objects.all()), 0)
+        self.assertEqual(len(Comment.objects.all()), 0)
+        self.assertEqual(len(User.objects.all()), 0)

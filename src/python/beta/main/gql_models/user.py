@@ -47,8 +47,7 @@ class DeleteUser(graphene.Mutation):
             user = User.objects.get(id=user_id)
         elif kwargs.get('username'):
             user = User.objects.get(username=username)
-        user.is_active = False
-        user.save()
+        user.delete()
         ok = True
         return DeleteUser(ok=ok)
 

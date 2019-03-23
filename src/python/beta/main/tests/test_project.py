@@ -1,6 +1,6 @@
 from main.tests.gql import GraphQLTestCase
 from django.contrib.auth.models import User
-from main.models import Project
+from main.models import Project, Chapter, Comment
 
 
 class ProjectTestCase(GraphQLTestCase):
@@ -92,3 +92,32 @@ class ProjectTestCase(GraphQLTestCase):
         self.assertResponseNoErrors(resp)
         data = resp['data']['updateProject']['project']['title']
         self.assertEqual(data, 'ron weasley')
+
+    def test_delete_cascades(self):
+        """If a project is deleted, its associated chapters and comments
+        should be deleted as well"""
+        user = self.seed_user()
+        user2 = User.objects.create_user(username="grrmartin")
+        project = Project.objects.create(user=user, title='harry potter')
+        chapter1 = Chapter.objects.create(
+            project=project, chapter_text="yer a wizard")
+        chapter2 = Chapter.objects.create(
+            project=project, chapter_text="a what?")
+        Comment.objects.create(chapter=chapter1, commenter=user2,
+                               text="how about adding some DEATH", reference_start=1, reference_end=3)
+        Comment.objects.create(chapter=chapter2, commenter=user2,
+                               text="could use more sarcastic comments", reference_start=2, reference_end=4)
+        q = '''
+        mutation($projectId:Int!) {
+            deleteProject(projectId:$projectId) {
+                ok
+            }
+        }
+        '''
+        resp = self.query(q, op_name="deleteProject",
+                          variables={'projectId': project.id})
+        self.assertResponseNoErrors(resp)
+        # everything should have deleted
+        self.assertEqual(len(Project.objects.all()), 0)
+        self.assertEqual(len(Chapter.objects.all()), 0)
+        self.assertEqual(len(Comment.objects.all()), 0)

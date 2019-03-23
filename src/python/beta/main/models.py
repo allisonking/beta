@@ -45,4 +45,4 @@ class Comment(models.Model):
 
     def __str__(self):
         # return the first 100 characters of the text
-        return f'{self.text[0:100]}...'
+        return f'{self.text[0:100]}... by {self.commenter}'
