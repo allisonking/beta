@@ -1,9 +1,8 @@
 import React from 'react';
-import { Query, ChildDataProps, graphql } from 'react-apollo';
-import projectsQuery from '../../queries/projects';
-import { Projects } from '../../queries/types/Projects';
+import { Query } from 'react-apollo';
 
 import TextBox from '../TextBox/TextBox';
+import { Projects } from '../../queries/types/Projects';
 import { QUERY_ALL_PROJECTS } from '../../api';
 
 class ProjectQuery extends Query<Projects> {}
