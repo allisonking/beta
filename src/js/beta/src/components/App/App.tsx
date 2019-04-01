@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import WriteRoute from '../WriteRoute/WriteRoute';
+import ProjectsRoute from '../ProjectsRoute/ProjectsRoute';
 import Header from '../Header/Header';
 import './App.scss';
 
@@ -11,6 +12,7 @@ class App extends Component {
       <div className="App">
         <Header />
         <Switch>
+          <Route path="/projects" component={ProjectsRoute} />
           <Route path="/write" component={WriteRoute} />
         </Switch>
       </div>
