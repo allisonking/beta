@@ -11,6 +11,7 @@ import Label from 'reactstrap/lib/Label';
 import Input from 'reactstrap/lib/Input';
 import { Mutation } from 'react-apollo';
 import createChapterMutation from '../../../mutations/chapter';
+import { CreateChapterMutation } from '../../../mutations/MutationClasses';
 
 import styles from './WriteBox.module.scss';
 
@@ -68,7 +69,7 @@ const WriteBox = () => {
   return (
     <div>
       <div className="text-right m-1">
-        <Mutation
+        <CreateChapterMutation
           mutation={createChapterMutation}
           variables={{
             projectId: 1,
@@ -82,17 +83,19 @@ const WriteBox = () => {
             <button
               className="btn btn-primary"
               onClick={() => {
-                console.log('save clicked');
                 saveChapter();
+                if (data) {
+                  console.log(data.ok);
+                }
               }}
             >
               {' '}
               Save{' '}
             </button>
           )}
-        </Mutation>
+        </CreateChapterMutation>
       </div>
-      <div className="text-left">
+      <div className="text-left mx-2 p-2">
         <Label>Title</Label>
         <Input onChange={handleChangeTitle} />
       </div>
@@ -108,6 +111,7 @@ const WriteBox = () => {
       </button>
 
       <div className={`${styles.editor} mt-2 mx-2 p-2 text-left`}>
+        <Label>Text</Label>
         <Editor
           ref={editorRef}
           editorState={editorState}

@@ -1,13 +1,10 @@
 import React from 'react';
-import { Query } from 'react-apollo';
-import { Projects } from '../../queries/types/Projects';
 import projectQuery from '../../queries/projects';
-
-class ProjectQuery extends Query<Projects> {}
+import { AllProjectsQuery } from '../../queries/QueryClasses';
 
 const ProjectsRoute = () => {
   return (
-    <ProjectQuery query={projectQuery}>
+    <AllProjectsQuery query={projectQuery}>
       {({ loading, error, data }) => {
         if (loading) return <div>Loading...</div>;
         if (error) {
@@ -28,7 +25,7 @@ const ProjectsRoute = () => {
           </div>
         );
       }}
-    </ProjectQuery>
+    </AllProjectsQuery>
   );
 };
 
