@@ -1,13 +1,13 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 import { Projects } from '../../queries/types/Projects';
-import { QUERY_ALL_PROJECTS } from '../../api';
+import projectQuery from '../../queries/projects';
 
 class ProjectQuery extends Query<Projects> {}
 
 const ProjectsRoute = () => {
   return (
-    <ProjectQuery query={QUERY_ALL_PROJECTS}>
+    <ProjectQuery query={projectQuery}>
       {({ loading, error, data }) => {
         if (loading) return <div>Loading...</div>;
         if (error) {

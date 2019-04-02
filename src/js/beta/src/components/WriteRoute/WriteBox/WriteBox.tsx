@@ -1,11 +1,29 @@
 import React from 'react';
-import { Editor, EditorState, RichUtils } from 'draft-js';
+import {
+  Editor,
+  EditorState,
+  RichUtils,
+  ContentState,
+  convertToRaw,
+} from 'draft-js';
+
+import Label from 'reactstrap/lib/Label';
+import Input from 'reactstrap/lib/Input';
+import { Mutation } from 'react-apollo';
+import createChapterMutation from '../../../mutations/chapter';
+
 import styles from './WriteBox.module.scss';
+
+// interface Props {
+//   onSave: (title: String, state: ContentState) => void;
+// }
 
 const WriteBox = () => {
   const [editorState, setEditorState] = React.useState(
     EditorState.createEmpty()
   );
+
+  const [title, setTitle] = React.useState();
 
   const editorRef = React.useCallback(node => {
     // focus the editor
@@ -44,8 +62,41 @@ const WriteBox = () => {
     handleEditorChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'));
   };
 
+  const handleChangeTitle = (evt: React.SyntheticEvent<HTMLInputElement>) =>
+    setTitle(evt.currentTarget.value);
+
   return (
     <div>
+      <div className="text-right m-1">
+        <Mutation
+          mutation={createChapterMutation}
+          variables={{
+            projectId: 1,
+            title: title,
+            chapterText: JSON.stringify(
+              convertToRaw(editorState.getCurrentContent())
+            ),
+          }}
+        >
+          {(saveChapter, { data }) => (
+            <button
+              className="btn btn-primary"
+              onClick={() => {
+                console.log('save clicked');
+                saveChapter();
+              }}
+            >
+              {' '}
+              Save{' '}
+            </button>
+          )}
+        </Mutation>
+      </div>
+      <div className="text-left">
+        <Label>Title</Label>
+        <Input onChange={handleChangeTitle} />
+      </div>
+
       <button onClick={handleBold}>
         <strong>B</strong>
       </button>
