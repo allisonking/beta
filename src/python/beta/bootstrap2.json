@@ -1,0 +1,75 @@
+[
+  {
+    "model": "main.chapter",
+    "pk": 1,
+    "fields": {
+      "project": 1,
+      "title": "Chapter 1",
+      "chapter_text": "{\"blocks\":[{\"key\":\"c71lh\",\"text\":\"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut eget ipsum sollicitudin, accumsan sapien eget, rhoncus enim. Etiam sed tellus eros. Ut eros ligula, feugiat ac lectus sit amet, vestibulum ultrices augue. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Quisque at tincidunt est. Integer dictum est scelerisque, condimentum odio at, pretium diam. Donec ut ultrices justo, nec mollis leo. Duis pharetra massa lectus, non sodales tortor maximus sed. Aliquam ac sapien fermentum, volutpat ex in, egestas nunc. Ut et lectus justo. Donec viverra purus in metus hendrerit, vitae pellentesque massa laoreet.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"9b7sr\",\"text\":\"Ut venenatis tellus ut tellus porta, ac efficitur nunc laoreet. Morbi vitae varius sem, ornare rutrum ex. Maecenas tempor volutpat metus, tristique aliquam nulla porta vitae. Etiam lacus nunc, finibus quis eleifend vel, congue a orci. Donec fermentum velit nec augue ultricies ultrices. Praesent tristique quam non tristique hendrerit. Suspendisse potenti. Duis non dignissim diam. Sed a efficitur erat. In sollicitudin leo quis diam pharetra volutpat. Morbi pellentesque velit eget diam cursus placerat. Sed nulla mauris, dapibus vitae diam at, lacinia elementum massa. Etiam vel lacinia ligula. Sed erat lectus, dictum sit amet mauris et, placerat volutpat sem.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"bsev4\",\"text\":\"Fusce ultricies neque dui. Proin in vehicula dui, fermentum interdum libero. Suspendisse egestas diam ac ligula mollis accumsan. Fusce sed est ultricies, ultricies nisl quis, congue velit. Duis eu mi a leo vestibulum egestas. Phasellus faucibus sed lectus et euismod. Vivamus dictum libero sit amet facilisis egestas.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+      "order_num": 1,
+      "version": 1
+    }
+  },
+  {
+    "model": "main.chapter",
+    "pk": 2,
+    "fields": {
+      "project": 1,
+      "title": "Chapter 2",
+      "chapter_text": "{\"blocks\":[{\"key\":\"c71lh\",\"text\":\"Phasellus lobortis mattis mi. Etiam arcu nulla, vulputate ac congue eu, vulputate sit amet purus. Etiam commodo nibh vehicula ex efficitur, eu tempor purus efficitur. Duis luctus, mi quis mollis viverra, sapien arcu interdum ipsum, a dapibus tortor augue ut risus. Vivamus et facilisis lectus, eget imperdiet sapien. Praesent egestas porttitor massa, ac varius libero cursus a. Donec tincidunt libero in felis porta tincidunt. Curabitur eu malesuada ante, sit amet tincidunt sapien. Aenean quam massa, tincidunt sed hendrerit in, mollis vitae odio. Duis purus justo, elementum eget feugiat eu, eleifend eget nibh. Nam vel erat nulla. In commodo velit non rhoncus molestie.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}},{\"key\":\"8vet4\",\"text\":\"Vestibulum ultrices consequat mauris vel iaculis. Praesent gravida ante vel nunc imperdiet euismod. Suspendisse nec lacus eget risus efficitur dapibus quis vel lorem. Fusce congue, nunc ut faucibus egestas, elit ligula sollicitudin orci, ac lobortis ligula arcu et orci. Nam rutrum vulputate est eget aliquet. Quisque vestibulum ipsum odio, vitae placerat lectus ornare vitae. Nullam a felis in mi bibendum mollis eu et massa.\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+      "order_num": 2,
+      "version": 1
+    }
+  },
+  {
+    "model": "auth.user",
+    "pk": 1,
+    "fields": {
+      "password": "pbkdf2_sha256$120000$wp4RQ0ph0cR2$XMJMv2B4xVIHFpqMoeTfH75ZyQSbDcmiKNiUIq0OVPA=",
+      "last_login": "2019-03-17T00:17:17Z",
+      "is_superuser": true,
+      "username": "admin",
+      "first_name": "",
+      "last_name": "",
+      "email": "admin@example.com",
+      "is_staff": true,
+      "is_active": true,
+      "date_joined": "2019-03-17T00:16:32Z",
+      "groups": [],
+      "user_permissions": []
+    }
+  },
+  {
+    "model": "main.comment",
+    "pk": 1,
+    "fields": {
+      "chapter": 1,
+      "commenter": 1,
+      "text": "wow, this is very insightful",
+      "reference_start": 50,
+      "reference_end": 100,
+      "tags": "[\"reaction\"]"
+    }
+  },
+  {
+    "model": "main.comment",
+    "pk": 2,
+    "fields": {
+      "chapter": 2,
+      "commenter": 1,
+      "text": "I think there is a spelling mistake here?",
+      "reference_start": 150,
+      "reference_end": 300,
+      "tags": "[\"spelling\"]"
+    }
+  },
+  {
+    "model": "main.project",
+    "pk": 1,
+    "fields": {
+      "title": "Example",
+      "user": 1,
+      "created_at": "2019-03-17T00:19:27Z"
+    }
+  }
+]
