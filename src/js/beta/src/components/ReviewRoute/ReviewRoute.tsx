@@ -1,5 +1,6 @@
 import React from 'react';
 import { EditorState, RichUtils, convertFromRaw } from 'draft-js';
+import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import Editor from 'draft-js-plugins-editor';
 import createHighlightPlugin from '../plugins/highlightPlugin';
 
@@ -17,10 +18,16 @@ const ReviewRoute = () => {
   );
   const [editorStateCopy, setEditorStateCopy] = React.useState(editorState);
 
-  const [showCommentBox, setShowCommentBox] = React.useState(false);
+  const [showCommentButton, setShowCommentButton] = React.useState(false);
+  const [showPopover, setShowPopover] = React.useState(false);
 
   const handleCommentButton = () => {
     console.log('comment button clicked');
+    setShowPopover(true);
+  };
+
+  const togglePopover = () => {
+    setShowPopover(!showPopover);
   };
 
   const handleKeyCommand = (command: string) => {
@@ -47,18 +54,30 @@ const ReviewRoute = () => {
     // setEditorStateCopy(state);
     setEditorState(state);
     if (isSelection(state)) {
-      setShowCommentBox(true);
+      setShowCommentButton(true);
     } else {
-      setShowCommentBox(false);
+      setShowCommentButton(false);
     }
   };
 
   return (
     <div className="text-left p-2 m-2">
-      {showCommentBox && (
+      {showCommentButton && (
         <div>
-          <input />
-          <button onClick={handleCommentButton}>Comment</button>
+          <button id="comment" onClick={handleCommentButton}>
+            Comment
+          </button>
+          <Popover
+            placement={'top'}
+            isOpen={showPopover}
+            target={'comment'}
+            toggle={togglePopover}
+          >
+            <PopoverHeader>Add Comment</PopoverHeader>
+            <PopoverBody>
+              <input />
+            </PopoverBody>
+          </Popover>
         </div>
       )}
       <Editor
