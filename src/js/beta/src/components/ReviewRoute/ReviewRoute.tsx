@@ -1,8 +1,9 @@
 import React from 'react';
-import { EditorState, RichUtils, convertFromRaw } from 'draft-js';
+import { EditorState, RichUtils, convertFromRaw, convertToRaw } from 'draft-js';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import Editor from 'draft-js-plugins-editor';
 import createHighlightPlugin from '../plugins/highlightPlugin';
+import CommentForm from './CommentForm/CommentForm';
 
 const ReviewRoute = () => {
   const projectNum = 1;
@@ -16,13 +17,18 @@ const ReviewRoute = () => {
   const [editorState, setEditorState] = React.useState(
     EditorState.createWithContent(convertFromRaw(JSON.parse(dummyText)))
   );
-  const [editorStateCopy, setEditorStateCopy] = React.useState(editorState);
 
-  const [showCommentButton, setShowCommentButton] = React.useState(false);
+  const [commentButtonIsEnabled, setCommentButtonIsEnabled] = React.useState(
+    false
+  );
   const [showPopover, setShowPopover] = React.useState(false);
 
   const handleCommentButton = () => {
     console.log('comment button clicked');
+    console.log('in comment button', editorState.getSelection());
+    console.log(convertToRaw(editorState.getCurrentContent()));
+    setEditorState(RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT'));
+
     setShowPopover(true);
   };
 
@@ -49,37 +55,60 @@ const ReviewRoute = () => {
   };
 
   const handleEditorChange = (state: EditorState) => {
-    // all state changes (e.g. typing) get swallowed by the copy
-    // getting the selection doesn't work without setting the state first
-    // setEditorStateCopy(state);
+    console.log(state.getSelection());
     setEditorState(state);
     if (isSelection(state)) {
-      setShowCommentButton(true);
+      setCommentButtonIsEnabled(true);
     } else {
-      setShowCommentButton(false);
+      setCommentButtonIsEnabled(false);
     }
+  };
+
+  const handleCommentSave = (text: string) => {
+    console.log('text', text);
+    console.log('start', editorState.getSelection().getStartOffset());
+    console.log('end', editorState.getSelection().getEndOffset());
+    console.log('block', editorState.getSelection().getAnchorKey());
+    // return things to the normal state
+    setShowPopover(false);
+    setCommentButtonIsEnabled(false);
+  };
+
+  const handleCommentCancel = () => {
+    // remove the highlight
+    setEditorState(RichUtils.toggleInlineStyle(editorState, 'HIGHLIGHT'));
+    //setEditorState(EditorState.undo(editorState));
+    // return things to the normal state
+    setShowPopover(false);
+    setCommentButtonIsEnabled(false);
   };
 
   return (
     <div className="text-left p-2 m-2">
-      {showCommentButton && (
-        <div>
-          <button id="comment" onClick={handleCommentButton}>
-            Comment
-          </button>
-          <Popover
-            placement={'top'}
-            isOpen={showPopover}
-            target={'comment'}
-            toggle={togglePopover}
-          >
-            <PopoverHeader>Add Comment</PopoverHeader>
-            <PopoverBody>
-              <input />
-            </PopoverBody>
-          </Popover>
-        </div>
-      )}
+      <div>
+        <button
+          id="comment"
+          onClick={handleCommentButton}
+          disabled={!commentButtonIsEnabled}
+        >
+          Comment
+        </button>
+        <Popover
+          placement={'top'}
+          isOpen={showPopover}
+          target={'comment'}
+          toggle={togglePopover}
+          hideArrow
+        >
+          <PopoverHeader>Add Comment</PopoverHeader>
+          <PopoverBody>
+            <CommentForm
+              onSave={handleCommentSave}
+              onCancel={handleCommentCancel}
+            />
+          </PopoverBody>
+        </Popover>
+      </div>
       <Editor
         editorState={editorState}
         onChange={handleEditorChange}
