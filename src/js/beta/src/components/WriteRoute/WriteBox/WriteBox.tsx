@@ -1,5 +1,5 @@
 import React from 'react';
-import { Editor, EventHook } from 'slate-react';
+import { Editor } from 'slate-react';
 import { Value, ValueJSON, Editor as CoreEditor } from 'slate';
 import Label from 'reactstrap/lib/Label';
 import Input from 'reactstrap/lib/Input';
@@ -76,7 +76,6 @@ const WriteBox = () => {
               >
                 {loading ? 'Saving...' : 'Save'}
               </button>
-              {data && data.ok && <div>Saved</div>}
             </div>
           )}
         </CreateChapterMutation>
