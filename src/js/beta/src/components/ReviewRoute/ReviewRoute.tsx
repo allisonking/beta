@@ -84,40 +84,46 @@ const ReviewRoute = () => {
   };
 
   return (
-    <div className="text-left p-2 m-2">
-      <div>
-        <button
-          id="comment"
-          onClick={handleCommentButton}
-          disabled={!commentButtonIsEnabled}
-        >
-          Comment
-        </button>
-        <Popover
-          placement={'top'}
-          isOpen={showPopover}
-          target={'comment'}
-          toggle={togglePopover}
-          hideArrow
-        >
-          <PopoverHeader>Add Comment</PopoverHeader>
-          <PopoverBody>
-            <CommentForm
-              onSave={handleCommentSave}
-              onCancel={handleCommentCancel}
-            />
-          </PopoverBody>
-        </Popover>
+    <div className="row">
+      <div className="text-left col-8">
+        <div className="p-2">
+          <Editor
+            editorState={editorState}
+            onChange={handleEditorChange}
+            plugins={[highlightPlugin]}
+            handleKeyCommand={handleKeyCommand}
+            readOnly={showPopover}
+          />
+        </div>
       </div>
-      <Editor
-        editorState={editorState}
-        onChange={handleEditorChange}
-        plugins={[highlightPlugin]}
-        handleKeyCommand={handleKeyCommand}
-        //readOnly
-      />
+      <div className="col-4">
+        <div>
+          <button
+            id="comment"
+            onClick={handleCommentButton}
+            disabled={!commentButtonIsEnabled}
+          >
+            Comment
+          </button>
+          <Popover
+            placement={'top'}
+            isOpen={showPopover}
+            target={'comment'}
+            toggle={togglePopover}
+            hideArrow
+          >
+            <PopoverHeader>Add Comment</PopoverHeader>
+            <PopoverBody>
+              <CommentForm
+                onSave={handleCommentSave}
+                onCancel={handleCommentCancel}
+              />
+            </PopoverBody>
+          </Popover>
+        </div>
+      </div>
     </div>
   );
 };
-
+// try this out? https://github.com/facebook/draft-js/blob/master/examples/draft-0-10-0/link/link.html
 export default ReviewRoute;
