@@ -17,10 +17,12 @@ const Comment = ({ onSave, onCancel }: Props) => {
   const handleSave = () => {
     onSave(commentText);
   };
+
   return (
     <div>
       <FormGroup>
         <Input
+          autoFocus
           type="textarea"
           value={commentText}
           onChange={handleCommentTextChange}
