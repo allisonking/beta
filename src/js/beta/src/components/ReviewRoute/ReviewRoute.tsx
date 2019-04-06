@@ -17,6 +17,7 @@ const ReviewRoute = () => {
 
   // ref to the editor
   const editorRef = React.useRef<Editor | null>(null);
+  const editorNodeRef = React.useRef<HTMLDivElement | null>(null);
 
   const [commentButtonIsEnabled, setCommentButtonIsEnabled] = React.useState(
     false
@@ -71,6 +72,7 @@ const ReviewRoute = () => {
     const start = selection.start.offset;
     const end = selection.end.offset;
     console.log(start, end);
+    console.log(selection.isFocused);
     return start !== end;
   };
 
@@ -78,6 +80,8 @@ const ReviewRoute = () => {
     value: Value;
   }
   const onChange = ({ value }: Change) => {
+    // TODO: if user clicks outside, disable the comment button
+    // unless they clicked the comment button...
     setEditorValue(value);
     if (isSelection(value.selection)) {
       setCommentButtonIsEnabled(true);
