@@ -11,9 +11,12 @@ const CommentsContainer = ({ comments }: Props) => {
     null
   );
   const handleClick = (comment: Comment) => {
+    console.log('clicked comment', comment);
     if (activeComment === comment) {
+      console.log('setting to null');
       setActiveComment(null);
     } else {
+      console.log('setting to active comment');
       setActiveComment(comment);
     }
   };

@@ -1,4 +1,8 @@
+import React from 'react';
+
 export interface Comment {
   text: string;
-  highlightId: string;
+  highlightRef: React.RefObject<HighlightRef>;
 }
+
+export type HighlightRef = HTMLSpanElement;

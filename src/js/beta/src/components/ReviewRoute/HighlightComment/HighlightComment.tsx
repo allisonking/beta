@@ -7,12 +7,15 @@ interface Props {
   attributes: RenderAttributes;
 }
 
-const HighlightComment = ({ attributes, children }: Props) => {
+export type HighlightRef = HTMLSpanElement;
+
+const HighlightComment = React.forwardRef<HighlightRef, Props>((props, ref) => {
+  const { attributes, children } = props;
   return (
-    <span {...attributes} className={styles.highlight} id="highlight123">
+    <span {...attributes} className={styles.highlight} ref={ref}>
       {children}
     </span>
   );
-};
+});
 
 export default HighlightComment;

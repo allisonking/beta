@@ -21,7 +21,7 @@ const CommentCard = ({ comment, onClick, active }: Props) => {
 
   React.useEffect(() => {
     // emphasize the highlight
-    const highlight = document.getElementById(comment.highlightId);
+    const highlight = comment.highlightRef.current;
     if (highlight) {
       const currentClass = highlight.className;
       if (active) {
@@ -33,13 +33,12 @@ const CommentCard = ({ comment, onClick, active }: Props) => {
         setCommentDisplay(truncatedComment);
       }
     }
-    // show the whole text
   }, [active]);
 
   const handleClick = () => {
     onClick(comment);
   };
-
+  console.log(comment, active);
   return (
     <div className={`${styles.commentCard} p-2`} onClick={handleClick}>
       {commentDisplay}

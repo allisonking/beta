@@ -1,10 +1,10 @@
 import React from 'react';
-import { Editor, RenderMarkProps, RenderNodeProps } from 'slate-react';
+import { Editor, RenderMarkProps } from 'slate-react';
 import { Value, ValueJSON, Editor as CoreEditor, Selection } from 'slate';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import isHotkey from 'is-hotkey';
 
-import { Comment } from '../../../types/comment';
+import { Comment, HighlightRef } from '../../../types/comment';
 import CommentForm from './CommentForm/CommentForm';
 import HighlightComment from './HighlightComment/HighlightComment';
 import CommentsContainer from './CommentsContainer/CommentsContainer';
@@ -27,6 +27,7 @@ const ReviewRoute = () => {
   );
   const [showPopover, setShowPopover] = React.useState(false);
   const [comments, setComments] = React.useState<Comment[]>([]);
+  const [highlightRef, setHighlightRef] = React.useState();
 
   const handleCommentButton = () => {
     const editor = editorRef.current;
@@ -60,7 +61,9 @@ const ReviewRoute = () => {
   ) => {
     switch (props.mark.type) {
       case 'highlight':
-        return <HighlightComment {...props} />;
+        const ref = React.createRef<HighlightRef>();
+        setHighlightRef(ref);
+        return <HighlightComment ref={ref} {...props} />;
       default:
         return next();
     }
@@ -91,12 +94,15 @@ const ReviewRoute = () => {
     console.log('start', editorValue.selection.start.offset);
     console.log('end', editorValue.selection.end.offset);
     console.log('block', editorValue.selection.anchor.key);
-    const highlightId = 'highlight123';
-    setComments([...comments, { text, highlightId }]);
+    console.log('highlightRef', highlightRef);
+    console.log('comments', comments);
+    setComments([...comments, { text, highlightRef }]);
     // return things to the normal state
     setShowPopover(false);
     setCommentButtonIsEnabled(false);
   };
+
+  console.log(comments);
 
   const handleCommentCancel = () => {
     // remove the highlight
@@ -110,8 +116,6 @@ const ReviewRoute = () => {
       setCommentButtonIsEnabled(false);
     }, 1);
   };
-
-  console.log(comments);
 
   return (
     <div className="row">
