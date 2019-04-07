@@ -1,7 +1,7 @@
 import { Mutation } from 'react-apollo';
 
 interface Chapter {
-  title: string;
+  title?: string;
   chapterText: string;
 }
 
@@ -12,7 +12,7 @@ interface Data {
 
 interface Variables {
   projectId: number;
-  title: string;
+  title?: string;
   chapterText: string;
 }
 
