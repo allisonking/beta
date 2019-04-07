@@ -1,10 +1,16 @@
 import React from 'react';
 import { Editor, RenderMarkProps } from 'slate-react';
-import { Value, ValueJSON, Editor as CoreEditor, Selection } from 'slate';
+import {
+  Value,
+  ValueJSON,
+  Editor as CoreEditor,
+  Selection,
+  RangeType,
+} from 'slate';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import isHotkey from 'is-hotkey';
 
-import { Comment, HighlightRef } from '../../../types/comment';
+import { Comment } from '../../../types/comment';
 import CommentForm from './CommentForm/CommentForm';
 import HighlightComment from './HighlightComment/HighlightComment';
 import CommentsContainer from './CommentsContainer/CommentsContainer';
@@ -34,7 +40,6 @@ const ReviewRoute = () => {
     if (editor) {
       editor.toggleMark('highlight');
     }
-    //setShowPopover(true);
   };
 
   const togglePopover = () => {
@@ -61,9 +66,9 @@ const ReviewRoute = () => {
   ) => {
     switch (props.mark.type) {
       case 'highlight':
-        const ref = React.createRef<HighlightRef>();
-        setHighlightRef(ref);
-        return <HighlightComment ref={ref} {...props} />;
+        return <HighlightComment {...props} emphasized={false} />;
+      case 'highlight-emphasized':
+        return <HighlightComment {...props} emphasized={true} />;
       default:
         return next();
     }
@@ -94,15 +99,33 @@ const ReviewRoute = () => {
     console.log('start', editorValue.selection.start.offset);
     console.log('end', editorValue.selection.end.offset);
     console.log('block', editorValue.selection.anchor.key);
-    console.log('highlightRef', highlightRef);
+    console.log('range', editorValue.selection.toRange());
     console.log('comments', comments);
-    setComments([...comments, { text, highlightRef }]);
+
+    const highlightRange = editorValue.selection.toRange();
+    setComments([...comments, { text, highlightRange }]);
     // return things to the normal state
     setShowPopover(false);
     setCommentButtonIsEnabled(false);
   };
 
-  console.log(comments);
+  const emphasizeHighlight = (highlightRange: RangeType) => {
+    const editor = editorRef.current;
+    if (editor) {
+      const range = highlightRange as any;
+      editor.removeMarkAtRange(range, 'highlight');
+      editor.addMarkAtRange(range, 'highlight-emphasized');
+    }
+  };
+
+  const deemphasizeHighlight = (highlightRange: RangeType) => {
+    const editor = editorRef.current;
+    if (editor) {
+      const range = highlightRange as any;
+      editor.removeMarkAtRange(range, 'highlight-emphasized');
+      editor.addMarkAtRange(range, 'highlight');
+    }
+  };
 
   const handleCommentCancel = () => {
     // remove the highlight
@@ -157,7 +180,11 @@ const ReviewRoute = () => {
             </PopoverBody>
           </Popover>
         </div>
-        <CommentsContainer comments={comments} />
+        <CommentsContainer
+          comments={comments}
+          emphasizeHighlight={emphasizeHighlight}
+          deemphasizeHighlight={deemphasizeHighlight}
+        />
       </div>
     </div>
   );

@@ -1,8 +1,9 @@
 import React from 'react';
+import { Range, RangeType } from 'slate';
 
 export interface Comment {
   text: string;
-  highlightRef: React.RefObject<HighlightRef>;
+  highlightRange: RangeType;
 }
 
-export type HighlightRef = HTMLSpanElement;
+//export type HighlightRef = HTMLSpanElement;

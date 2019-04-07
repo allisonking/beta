@@ -2,14 +2,23 @@ import React from 'react';
 import styles from './CommentCard.module.scss';
 import highlightStyles from '../HighlightComment/HighlightComment.module.scss';
 import { Comment } from '../../../../types/comment';
+import { RangeType } from 'slate';
 
 interface Props {
   comment: Comment;
   active: boolean;
   onClick: (comment: Comment) => void;
+  emphasizeHighlight: (highlightRange: RangeType) => void;
+  deemphasizeHighlight: (highlightRange: RangeType) => void;
 }
 
-const CommentCard = ({ comment, onClick, active }: Props) => {
+const CommentCard = ({
+  comment,
+  onClick,
+  active,
+  emphasizeHighlight,
+  deemphasizeHighlight,
+}: Props) => {
   const truncatedComment = React.useMemo(
     () =>
       comment.text.length < 10
@@ -21,17 +30,12 @@ const CommentCard = ({ comment, onClick, active }: Props) => {
 
   React.useEffect(() => {
     // emphasize the highlight
-    const highlight = comment.highlightRef.current;
-    if (highlight) {
-      const currentClass = highlight.className;
-      if (active) {
-        const newClass = `${currentClass} ${highlightStyles.active}`;
-        highlight.setAttribute('class', newClass);
-        setCommentDisplay(comment.text);
-      } else {
-        highlight.setAttribute('class', highlightStyles.highlight);
-        setCommentDisplay(truncatedComment);
-      }
+    if (active) {
+      emphasizeHighlight(comment.highlightRange);
+      setCommentDisplay(comment.text);
+    } else {
+      deemphasizeHighlight(comment.highlightRange);
+      setCommentDisplay(truncatedComment);
     }
   }, [active]);
 
