@@ -3,8 +3,11 @@ import { Editor, RenderMarkProps, RenderNodeProps } from 'slate-react';
 import { Value, ValueJSON, Editor as CoreEditor, Selection } from 'slate';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import isHotkey from 'is-hotkey';
+
+import { Comment } from '../../../types/comment';
 import CommentForm from './CommentForm/CommentForm';
 import HighlightComment from './HighlightComment/HighlightComment';
+import CommentsContainer from './CommentsContainer/CommentsContainer';
 
 const ReviewRoute = () => {
   const dummyText =
@@ -17,12 +20,13 @@ const ReviewRoute = () => {
 
   // ref to the editor
   const editorRef = React.useRef<Editor | null>(null);
-  const editorNodeRef = React.useRef<HTMLDivElement | null>(null);
 
+  // commenting functionality
   const [commentButtonIsEnabled, setCommentButtonIsEnabled] = React.useState(
     false
   );
   const [showPopover, setShowPopover] = React.useState(false);
+  const [comments, setComments] = React.useState<Comment[]>([]);
 
   const handleCommentButton = () => {
     const editor = editorRef.current;
@@ -30,12 +34,6 @@ const ReviewRoute = () => {
       editor.toggleMark('highlight');
     }
     //setShowPopover(true);
-  };
-
-  const openCommentBox = () => {
-    setTimeout(() => {
-      setShowPopover(true);
-    }, 1);
   };
 
   const togglePopover = () => {
@@ -71,8 +69,6 @@ const ReviewRoute = () => {
   const isSelection = (selection: Selection) => {
     const start = selection.start.offset;
     const end = selection.end.offset;
-    console.log(start, end);
-    console.log(selection.isFocused);
     return start !== end;
   };
 
@@ -95,6 +91,8 @@ const ReviewRoute = () => {
     console.log('start', editorValue.selection.start.offset);
     console.log('end', editorValue.selection.end.offset);
     console.log('block', editorValue.selection.anchor.key);
+    const highlightId = 'highlight123';
+    setComments([...comments, { text, highlightId }]);
     // return things to the normal state
     setShowPopover(false);
     setCommentButtonIsEnabled(false);
@@ -112,6 +110,8 @@ const ReviewRoute = () => {
       setCommentButtonIsEnabled(false);
     }, 1);
   };
+
+  console.log(comments);
 
   return (
     <div className="row">
@@ -133,6 +133,7 @@ const ReviewRoute = () => {
             id="comment"
             onClick={handleCommentButton}
             disabled={!commentButtonIsEnabled}
+            className="btn btn-secondary"
           >
             Comment
           </button>
@@ -152,6 +153,7 @@ const ReviewRoute = () => {
             </PopoverBody>
           </Popover>
         </div>
+        <CommentsContainer comments={comments} />
       </div>
     </div>
   );

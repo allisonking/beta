@@ -9,7 +9,7 @@ interface Props {
 
 const HighlightComment = ({ attributes, children }: Props) => {
   return (
-    <span {...attributes} className={styles.highlight}>
+    <span {...attributes} className={styles.highlight} id="highlight123">
       {children}
     </span>
   );
