@@ -10,24 +10,39 @@ interface Props {
 }
 
 const CommentCard = ({ comment, onClick, active }: Props) => {
+  const truncatedComment = React.useMemo(
+    () =>
+      comment.text.length < 10
+        ? comment.text
+        : `${comment.text.substring(0, 7)}...`,
+    [comment.text]
+  );
+  const [commentDisplay, setCommentDisplay] = React.useState(truncatedComment);
+
   React.useEffect(() => {
+    // emphasize the highlight
     const highlight = document.getElementById(comment.highlightId);
     if (highlight) {
       const currentClass = highlight.className;
       if (active) {
         const newClass = `${currentClass} ${highlightStyles.active}`;
         highlight.setAttribute('class', newClass);
+        setCommentDisplay(comment.text);
       } else {
         highlight.setAttribute('class', highlightStyles.highlight);
+        setCommentDisplay(truncatedComment);
       }
     }
+    // show the whole text
   }, [active]);
+
   const handleClick = () => {
     onClick(comment);
   };
+
   return (
     <div className={`${styles.commentCard} p-2`} onClick={handleClick}>
-      {comment.text}
+      {commentDisplay}
     </div>
   );
 };
