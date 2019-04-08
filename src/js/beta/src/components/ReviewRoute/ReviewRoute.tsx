@@ -16,6 +16,7 @@ import { Comment } from '../../../types/comment';
 import CommentForm from './CommentForm/CommentForm';
 import HighlightComment from './HighlightComment/HighlightComment';
 import CommentsContainer from './CommentsContainer/CommentsContainer';
+import HoverMenu from '../HoverMenu/HoverMenu';
 
 const ReviewRoute = () => {
   const dummyText =
@@ -35,7 +36,26 @@ const ReviewRoute = () => {
   );
   const [showPopover, setShowPopover] = React.useState(false);
   const [comments, setComments] = React.useState<Comment[]>([]);
-  const [highlightRef, setHighlightRef] = React.useState();
+  const menuRef = React.useRef<HTMLDivElement | null>(null);
+
+  React.useEffect(() => {
+    const menu = menuRef.current;
+    if (menu) {
+      const native = window.getSelection();
+      if (native) {
+        const range = native.getRangeAt(0);
+        const rect = range.getBoundingClientRect();
+        menu.style.opacity = '1';
+        menu.style.top = `${rect.top +
+          window.pageYOffset -
+          menu.offsetHeight}px`;
+        menu.style.left = `${rect.left +
+          window.pageXOffset -
+          menu.offsetWidth / 2 +
+          rect.width / 2}px`;
+      }
+    }
+  }, [editorValue]);
 
   const handleCommentButton = () => {
     const editor = editorRef.current;
@@ -155,34 +175,35 @@ const ReviewRoute = () => {
             onKeyDown={onKeyDown}
             renderMark={renderMark}
           />
+
+          <HoverMenu ref={menuRef} isOpen={commentButtonIsEnabled}>
+            <button
+              id="comment"
+              onClick={handleCommentButton}
+              className="btn btn-secondary"
+            >
+              Comment
+            </button>
+            <Popover
+              placement={'top'}
+              isOpen={showPopover}
+              target={'comment'}
+              toggle={togglePopover}
+              hideArrow
+            >
+              <PopoverHeader>Add Comment</PopoverHeader>
+              <PopoverBody>
+                <CommentForm
+                  onSave={handleCommentSave}
+                  onCancel={handleCommentCancel}
+                />
+              </PopoverBody>
+            </Popover>
+          </HoverMenu>
         </div>
       </div>
       <div className="col-4">
-        <div>
-          <button
-            id="comment"
-            onClick={handleCommentButton}
-            disabled={!commentButtonIsEnabled}
-            className="btn btn-secondary"
-          >
-            Comment
-          </button>
-          <Popover
-            placement={'top'}
-            isOpen={showPopover}
-            target={'comment'}
-            toggle={togglePopover}
-            hideArrow
-          >
-            <PopoverHeader>Add Comment</PopoverHeader>
-            <PopoverBody>
-              <CommentForm
-                onSave={handleCommentSave}
-                onCancel={handleCommentCancel}
-              />
-            </PopoverBody>
-          </Popover>
-        </div>
+        <div />
         <CommentsContainer
           comments={comments}
           emphasizeHighlight={emphasizeHighlight}
