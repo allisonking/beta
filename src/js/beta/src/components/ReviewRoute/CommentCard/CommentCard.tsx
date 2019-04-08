@@ -1,12 +1,13 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import styles from './CommentCard.module.scss';
-import highlightStyles from '../HighlightComment/HighlightComment.module.scss';
 import { Comment } from '../../../../types/comment';
 import { RangeType } from 'slate';
 
 interface Props {
   comment: Comment;
   active: boolean;
+  style?: CSSProperties;
+  className?: string;
   onClick: (comment: Comment) => void;
   emphasizeHighlight: (highlightRange: RangeType) => void;
   deemphasizeHighlight: (highlightRange: RangeType) => void;
@@ -16,8 +17,10 @@ const CommentCard = ({
   comment,
   onClick,
   active,
+  className,
   emphasizeHighlight,
   deemphasizeHighlight,
+  style,
 }: Props) => {
   const truncatedComment = React.useMemo(
     () =>
@@ -42,9 +45,13 @@ const CommentCard = ({
   const handleClick = () => {
     onClick(comment);
   };
-  console.log(comment, active);
+
   return (
-    <div className={`${styles.commentCard} p-2`} onClick={handleClick}>
+    <div
+      className={`${styles.commentCard} p-2 ${className}`}
+      onClick={handleClick}
+      style={style}
+    >
       {commentDisplay}
     </div>
   );

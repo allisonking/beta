@@ -1,11 +1,13 @@
 import React from 'react';
-import { Editor, RenderMarkProps } from 'slate-react';
+import { Editor, RenderMarkProps, findDOMNode } from 'slate-react';
 import {
   Value,
   ValueJSON,
   Editor as CoreEditor,
   Selection,
   RangeType,
+  Path,
+  Node,
 } from 'slate';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import isHotkey from 'is-hotkey';
@@ -100,10 +102,11 @@ const ReviewRoute = () => {
     console.log('end', editorValue.selection.end.offset);
     console.log('block', editorValue.selection.anchor.key);
     console.log('range', editorValue.selection.toRange());
-    console.log('comments', comments);
-
+    const anchorPath = editorValue.selection.anchor.path;
+    const anchorNode = editorValue.document.getDescendant(anchorPath as Path);
+    const domNode = findDOMNode(anchorNode as Node);
     const highlightRange = editorValue.selection.toRange();
-    setComments([...comments, { text, highlightRange }]);
+    setComments([...comments, { text, highlightRange, domNode }]);
     // return things to the normal state
     setShowPopover(false);
     setCommentButtonIsEnabled(false);
