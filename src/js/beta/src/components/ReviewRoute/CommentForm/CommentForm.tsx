@@ -22,7 +22,6 @@ const Comment = ({ onSave, onCancel }: Props) => {
     <div>
       <FormGroup>
         <Input
-          autoFocus
           type="textarea"
           value={commentText}
           onChange={handleCommentTextChange}

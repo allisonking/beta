@@ -12,7 +12,6 @@ interface Props {
 export type HighlightRef = HTMLSpanElement;
 
 const HighlightComment = ({ attributes, children, emphasized }: Props) => {
-  console.log('emphasized?', emphasized);
   return (
     <span
       {...attributes}

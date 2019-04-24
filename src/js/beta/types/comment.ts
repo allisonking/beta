@@ -4,7 +4,7 @@ import { Range, RangeType } from 'slate';
 export interface Comment {
   text: string;
   highlightRange: RangeType;
-  domNode: Element;
+  domTop: number;
 }
 
 //export type HighlightRef = HTMLSpanElement;

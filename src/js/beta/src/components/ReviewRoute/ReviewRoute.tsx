@@ -11,6 +11,7 @@ import {
 } from 'slate';
 import { Popover, PopoverHeader, PopoverBody } from 'reactstrap';
 import isHotkey from 'is-hotkey';
+import cx from 'classnames';
 
 import { Comment } from '../../../types/comment';
 import CommentForm from './CommentForm/CommentForm';
@@ -43,16 +44,22 @@ const ReviewRoute = () => {
     if (menu) {
       const native = window.getSelection();
       if (native) {
-        const range = native.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
-        menu.style.opacity = '1';
-        menu.style.top = `${rect.top +
-          window.pageYOffset -
-          menu.offsetHeight}px`;
-        menu.style.left = `${rect.left +
-          window.pageXOffset -
-          menu.offsetWidth / 2 +
-          rect.width / 2}px`;
+        if (native.rangeCount > 0) {
+          const range = native.getRangeAt(0);
+          const rect = range.getBoundingClientRect();
+          if (rect.width === 0) {
+            // prevent the tooltip from flying off when highlight is gone
+            return;
+          }
+          menu.style.opacity = '1';
+          menu.style.top = `${rect.bottom +
+            window.pageYOffset -
+            menu.offsetHeight}px`;
+          menu.style.left = `${rect.left +
+            window.pageXOffset -
+            menu.offsetWidth / 2 +
+            rect.width / 2}px`;
+        }
       }
     }
   }, [editorValue]);
@@ -125,8 +132,9 @@ const ReviewRoute = () => {
     const anchorPath = editorValue.selection.anchor.path;
     const anchorNode = editorValue.document.getDescendant(anchorPath as Path);
     const domNode = findDOMNode(anchorNode as Node);
+    const domTop = domNode.getBoundingClientRect().top + window.pageYOffset;
     const highlightRange = editorValue.selection.toRange();
-    setComments([...comments, { text, highlightRange, domNode }]);
+    setComments([...comments, { text, highlightRange, domTop }]);
     // return things to the normal state
     setShowPopover(false);
     setCommentButtonIsEnabled(false);
@@ -171,39 +179,20 @@ const ReviewRoute = () => {
             ref={editorRef}
             value={editorValue}
             onChange={onChange}
-            readOnly={showPopover}
+            //readOnly={showPopover}
             onKeyDown={onKeyDown}
             renderMark={renderMark}
           />
 
           <HoverMenu ref={menuRef} isOpen={commentButtonIsEnabled}>
-            <button
-              id="comment"
-              onClick={handleCommentButton}
-              className="btn btn-secondary"
-            >
-              Comment
-            </button>
-            <Popover
-              placement={'top'}
-              isOpen={showPopover}
-              target={'comment'}
-              toggle={togglePopover}
-              hideArrow
-            >
-              <PopoverHeader>Add Comment</PopoverHeader>
-              <PopoverBody>
-                <CommentForm
-                  onSave={handleCommentSave}
-                  onCancel={handleCommentCancel}
-                />
-              </PopoverBody>
-            </Popover>
+            <CommentForm
+              onSave={handleCommentSave}
+              onCancel={handleCommentCancel}
+            />
           </HoverMenu>
         </div>
       </div>
       <div className="col-4">
-        <div />
         <CommentsContainer
           comments={comments}
           emphasizeHighlight={emphasizeHighlight}

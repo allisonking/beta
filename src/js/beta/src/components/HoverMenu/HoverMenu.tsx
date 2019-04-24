@@ -18,7 +18,6 @@ export type MenuRef = HTMLDivElement;
 
 const HoverMenu = React.forwardRef<MenuRef, Props>(
   ({ isOpen, className, children }: Props, ref) => {
-    console.log('hover menu is open', isOpen);
     if (!isOpen) {
       return null;
     }

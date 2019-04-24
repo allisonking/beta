@@ -27,10 +27,11 @@ const CommentsContainer = ({
       // group by the bounding box top element since we'll use that later
       // could also group by `data-key` which is guaranteed by slate to be unique
       // comment.domNode.getAttribute('data-key')
-      return comment.domNode.getBoundingClientRect().top;
+      return comment.domTop;
     });
     setGroupedComments(grouped);
   }, [comments]);
+
   const handleClick = (comment: Comment) => {
     if (activeComment === comment) {
       setActiveComment(null);
@@ -38,9 +39,11 @@ const CommentsContainer = ({
       setActiveComment(comment);
     }
   };
+
   if (!groupedComments) {
     return null;
   }
+
   return (
     <div>
       {Object.keys(groupedComments as {}).map(top => {
